@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نموذج 2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.ckeditor.com/4.22.1/standard-all/ckeditor.js"></script>
+    <style>
+        /* إضافة الأنماط لضبط النصوص داخل الصورة */
+        .image-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* حد أقصى لعرض الصورة */
+            height: auto;
+        }
+
+        .image {
+            width: 100%;
+            height: auto;
+        }
+
+        /* محاذاة النصوص داخل الصورة */
+        .text-overlay {
+            position: absolute;
+            color: rgb(0, 0, 0);
+            padding: 10px;
+            overflow: auto;  /* لمنع النصوص من الخروج */
+            word-wrap: break-word; /* للتأكد من أن النص لا يخرج */
+            max-width: 100%;
+        }
+
+        #title-text {
+            top: 10px;
+            left: 10px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        #content-text {
+            bottom: 10px;
+            left: 10px;
+            font-size: 16px;
+            max-height: 400px; /* الحد الأقصى لارتفاع المحتوى */
+            width: calc(100% - 20px); /* لضمان وجود مسافة بين النص وحواف الصورة */
+            line-height: 1.6; /* تباعد افتراضي جميل */
+        }
+
+        #content-text ol, #content-text ul {
+            padding-right: 20px; /* شوي مسافة مناسبة */
+            list-style-position: inside; /* يخلي الأرقام والنقاط تظهر صح */
+        }
+
+
+        /* خصائص النص */
+        #editor {
+            width: 100%;
+            max-width: 600px;
+            height: 200px;
+            margin-top: 20px;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1 id="page-title">نموذج 2</h1>
+    </header>
+
+    <div class="container">
+        <div class="image-container">
+            <img src="design1.jpg" alt="صورة" class="image">
+            <div class="text-overlay" id="title-text"></div>
+            <div class="text-overlay" id="content-text"></div>
+        </div>
+
+        <div class="controls">
+            <input type="text" id="title-input" placeholder="أدخل العنوان" oninput="updateTitle()">
+            <textarea id="editor" placeholder="أدخل المحتوى"></textarea>
+            <button onclick="printImage()">طباعة القصاصة</button>
+        </div>
+    </div>
+
+    <script>
+        // تهيئة CKEditor
+        CKEDITOR.replace('editor', {
+            language: 'ar',
+            contentsLangDirection: 'rtl',
+            extraPlugins: 'justify,liststyle,table,image2,colorbutton,font',
+            removeButtons: '',
+            height: 400,
+            width: '60%'
+            
+        });
+
+        // تحديث العنوان عند الكتابة
+        function updateTitle() {
+            const title = document.getElementById('title-input').value;
+            document.getElementById('title-text').innerText = title;
+        }
+
+        // تحديث المحتوى عند الكتابة في CKEditor
+        CKEDITOR.instances.editor.on('change', function() {
+            const content = CKEDITOR.instances.editor.getData();
+            document.getElementById('content-text').innerHTML = content;
+        });
+
+       // طباعة القصاصة
+        function printImage() {
+            const controls = document.querySelector('.controls');
+        
+            // إخفاء العناصر قبل الطباعة
+            controls.style.display = 'none';
+
+            // تنفيذ أمر الطباعة
+            window.print();
+
+            // إظهار العناصر بعد الطباعة
+            setTimeout(() => {
+                controls.style.display = 'block';
+            }, 500); // تأخير بسيط لضمان انتهاء الطباعة
+        }
+    </script>
+</body>
+</html>
