@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>قصاصات متعددة</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.ckeditor.com/4.22.1/standard-all/ckeditor.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background-color: #ffffff00;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    header {
+      background-image: url('bg1.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: rgb(0, 0, 0);
+      text-align: center;
+      padding: 20px 0;
+      font-size: 24px;
+      width: 100%;
+    }
+
+    #page-title {
+      margin: 0;
+      padding: 0;
+    }
+
+    .main-container {
+      display: flex;
+      gap: 40px;
+      align-items: flex-start;
+      margin-top: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      width: 400px;
+    }
+
+    input[type="text"],
+    textarea#editor {
+      padding: 8px;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 16px;
+      text-align: center;
+      width: 100%;
+      font-weight: bold;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    textarea#editor {
+      height: 300px;
+      resize: vertical;
+      direction: rtl;
+    }
+
+    button {
+      padding: 10px 15px;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      background-color: #002e19;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      transition: background-color 0.3s, transform 0.3s;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #ea8f06;
+      transform: translateY(-2px);
+    }
+
+    .preview-note,
+    .note {
+      width: 400px;
+      position: relative;
+    }
+
+    .image-container {
+      position: relative;
+      width: 100%;
+    }
+
+    .image {
+      width: 100%;
+      height: auto;
+      border: 1px solid #ddd;
+      display: block;
+    }
+
+    .text-overlay {
+      position: absolute;
+      color: #000;
+      font-weight: bold;
+      text-align: right;
+      padding: 10px;
+      direction: rtl;
+      z-index: 10;
+      word-wrap: break-word;
+      word-break: break-word;
+      box-sizing: border-box;
+      width: calc(100% - 20px);
+    }
+
+    .title-text {
+      font-size: 20px;
+      color: #01441b;
+      top: 22%;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+    }
+
+    .content-text {
+      font-size: 16px;
+      top: 35%;
+      right: 10px;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+
+    .notes-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 40px;
+      width: 100%;
+    }
+
+    @media print {
+      header, .controls, .preview-note {
+        display: none;
+      }
+
+      .note {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main-container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .note, .preview-note {
+        width: 100%;
+      }
+
+      .title-text {
+        font-size: 18px;
+        top: 10px;
+        right: 10px;
+      }
+
+      .content-text {
+        font-size: 14px;
+        max-height: 150px;
+        top: auto;
+        bottom: 10px;
+      }
+
+      button {
+        font-size: 18px;
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 id="page-title">قصاصات متعددة</h1>
+  </header>
+
+  <div class="main-container">
+    <!-- المحرر -->
+    <div class="controls">
+      <input type="text" id="title-input" placeholder="أدخل العنوان">
+      <textarea id="editor" placeholder="أدخل المحتوى"></textarea>
+      <button onclick="addNote()">إضافة قصاصة</button>
+      <button onclick="window.print()">طباعة جميع القصاصات</button>
+    </div>
+
+    <!-- المعاينة المباشرة -->
+    <div class="preview-note">
+      <div class="image-container">
+        <img src="design3.jpg" alt="معاينة الخلفية" class="image" />
+        <div class="text-overlay title-text" id="preview-title"></div>
+        <div class="text-overlay content-text" id="preview-content"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- القصاصات النهائية -->
+  <div class="notes-grid" id="notesContainer"></div>
+
+  <script>
+    // إزالة تحذير CKEditor من الكونسول
+    console.warn = (function (originalWarn) {
+      return function (message) {
+        if (typeof message === 'string' && message.includes('not secure')) return;
+        originalWarn.apply(console, arguments);
+      };
+    })(console.warn);
+
+    // تفعيل CKEditor
+    CKEDITOR.replace('editor', {
+      language: 'ar',
+      contentsLangDirection: 'rtl',
+      extraPlugins: 'justify,liststyle,table,image2,colorbutton,font',
+      removeButtons: '',
+      height: 200,
+      width: '100%'
+    });
+
+    // تحديث المعاينة - العنوان
+    document.getElementById('title-input').addEventListener('input', function () {
+      document.getElementById('preview-title').innerText = this.value;
+    });
+
+    // تحديث المعاينة - المحتوى
+    CKEDITOR.on('instanceReady', function () {
+      CKEDITOR.instances.editor.on('change', function () {
+        const content = CKEDITOR.instances.editor.getData();
+        document.getElementById('preview-content').innerHTML = content;
+      });
+    });
+
+    // إنشاء قصاصة
+    function addNote() {
+      const title = document.getElementById('title-input').value.trim();
+      const content = CKEDITOR.instances.editor.getData().trim();
+
+      if (!title && !content) return;
+
+      const noteHTML = `
+        <div class="note">
+          <div class="image-container">
+            <img src="design3.jpg" alt="صورة الخلفية" class="image" />
+            <div class="text-overlay title-text">${title}</div>
+            <div class="text-overlay content-text">${content}</div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('notesContainer').innerHTML += noteHTML;
+
+      // إعادة التهيئة
+      document.getElementById('title-input').value = '';
+      CKEDITOR.instances.editor.setData('');
+      document.getElementById('preview-title').innerText = '';
+      document.getElementById('preview-content').innerHTML = '';
+    }
+  </script>
+</body>
+</html>
