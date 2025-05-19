@@ -168,8 +168,11 @@ button:active {
 
 /* إخفاء العناصر عند الطباعة */
 @media print {
-    #controls, header, .text-formatting {
-        display: none;
+    .controls,
+    header,
+    .text-formatting,
+    #snippets-list {
+        display: none !important;
     }
 }
 
