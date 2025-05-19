@@ -115,18 +115,26 @@
             margin-bottom: 5px;
         }
 
-        #snippet-items button {
-            width: 100%;
-            background-color: #eee;
-            color: #000;
-            border: none;
+        .snippet-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 5px;
+        }
+
+        .snippet-buttons button {
+            flex: 1;
             padding: 10px;
-            text-align: right;
+            font-size: 14px;
             border-radius: 3px;
         }
 
-        #snippet-items button:hover {
-            background-color: #ddd;
+        .delete-button {
+            background-color: #e74c3c !important;
+            color: white;
+        }
+
+        .delete-button:hover {
+            background-color: #c0392b !important;
         }
     </style>
 </head>
@@ -152,7 +160,6 @@
             </div>
         </div>
 
-
         <div id="snippets-list">
             <h3>📚 القصاصات المحفوظة:</h3>
             <ul id="snippet-items"></ul>
@@ -170,19 +177,16 @@
             width: '100%'
         });
 
-        // تحديث العنوان عند الكتابة
         function updateTitle() {
             const title = document.getElementById('title-input').value;
             document.getElementById('title-text').innerText = title;
         }
 
-        // تحديث المحتوى من CKEditor
         CKEDITOR.instances.editor.on('change', function () {
             const content = CKEDITOR.instances.editor.getData();
             document.getElementById('content-text').innerHTML = content;
         });
 
-        // طباعة القصاصة
         function printImage() {
             const controls = document.querySelector('.controls');
             controls.style.display = 'none';
@@ -192,7 +196,6 @@
             }, 500);
         }
 
-        // حفظ القصاصة
         function saveSnippet() {
             const title = document.getElementById('title-input').value;
             const content = CKEDITOR.instances.editor.getData();
@@ -202,19 +205,24 @@
             loadSnippets();
         }
 
-        // تحميل القصاصات
         function loadSnippets() {
             const snippetList = document.getElementById('snippet-items');
             snippetList.innerHTML = '';
             const snippets = JSON.parse(localStorage.getItem('snippets') || '[]');
             snippets.forEach((snippet, index) => {
                 const li = document.createElement('li');
-                li.innerHTML = `<button onclick="loadSnippet(${index})">${snippet.title || 'قصاصة بدون عنوان'}</button>`;
+                li.innerHTML = `
+                    <div class="snippet-buttons">
+                        <button onclick="loadSnippet(${index})">
+                            ${snippet.title || 'قصاصة بدون عنوان'}
+                        </button>
+                        <button class="delete-button" onclick="deleteSnippet(${index})">🗑️</button>
+                    </div>
+                `;
                 snippetList.appendChild(li);
             });
         }
 
-        // تحميل قصاصة معينة
         function loadSnippet(index) {
             const snippets = JSON.parse(localStorage.getItem('snippets') || '[]');
             const snippet = snippets[index];
@@ -223,7 +231,15 @@
             CKEDITOR.instances.editor.setData(snippet.content);
         }
 
-        // عند تحميل الصفحة
+        function deleteSnippet(index) {
+            const snippets = JSON.parse(localStorage.getItem('snippets') || '[]');
+            if (confirm('هل أنت متأكد من حذف هذه القصاصة؟')) {
+                snippets.splice(index, 1);
+                localStorage.setItem('snippets', JSON.stringify(snippets));
+                loadSnippets();
+            }
+        }
+
         window.onload = function () {
             loadSnippets();
         };
