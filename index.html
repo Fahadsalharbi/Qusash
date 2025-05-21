@@ -17,7 +17,7 @@
 
     body {
       font-family: 'Cairo', sans-serif;
-      background-color: #ffffff;
+      background: linear-gradient(135deg, #f4fdf8 0%, #eafaf0 100%);
       text-align: center;
       padding: 30px;
       animation: fadeIn 1.5s ease-in-out;
@@ -38,17 +38,21 @@
     }
 
     h1 {
-      font-family: 'Scheherazade New', serif; 
-      margin-bottom: 50px;
-      background-color: rgb(45,106,79);
-      color: white;
-      padding: 10px 20px;
-      border-radius: 16px;
+      font-family: 'Scheherazade New', serif;
+      font-size: 24px;
+      color: #2d6a4f;
+      border: 2px solid #2d6a4f;
+      padding: 10px 25px;
+      border-radius: 14px;
+      background-color: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(3px);
+      text-shadow: none;
       display: inline-block;
+      margin-bottom: 50px;
       animation: zoomIn 1.5s ease;
-      text-shadow: 0 0 8px rgba(24, 24, 24, 0.3);
-      font-size: 36px;
     }
+
+
 
     .gallery {
       display: flex;
@@ -68,24 +72,26 @@
     }
 
     .thumbnail-card {
-      width: 180px;
-      height: 300px;
-      background: #f9f9f9;
-      border: 2px solid #ccc;
-      border-radius: 16px;
-      overflow: hidden;
+      width: 150px;
+      height: 250px;
+      background: linear-gradient(120deg, #ffffff, #e0f7ee);
+      border: 1px solid #b8e6d3;
+      border-radius: 20px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.07);
+      transition: all 0.3s ease;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      padding: 10px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      padding: 15px;
+    }
+    .thumbnail-card:hover {
+      transform: translateY(-4px) scale(1.03);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
     }
 
-    .thumbnail:hover .thumbnail-card {
-      transform: scale(1.05);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-    }
+
+
 
     .thumbnail-title {
       font-size: 18px;
