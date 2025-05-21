@@ -4,6 +4,10 @@
     padding: 0;
 }
 
+.cke_notification_warning {
+    display: none !important;
+}
+
 body {
     font-family: 'Tajawal', sans-serif;
     margin: 0;
@@ -78,14 +82,15 @@ header {
 #title-text {
     font-size: 22px;
     color: #01441b;
-    top: 24%;  /* تعديل قيمة top هنا */
+    top: 23%;  /* تعديل قيمة top هنا */
     left: 50%; /* وضعه على اليسار */
-    transform: translate(-145px, 145px); /* -150px لليمين، 50px للأسفل */
+    transform: translate(-15px, 140px); /* -150px لليمين، 50px للأسفل */
+    text-align: center;
 }
 
 #content-text {
     font-size: 18px;
-    top: 35%;
+    top: 40%;
     max-height: 200px;
     overflow-y: auto;
 }
@@ -168,8 +173,11 @@ button:active {
 
 /* إخفاء العناصر عند الطباعة */
 @media print {
-    #controls, header, .text-formatting {
-        display: none;
+    .controls,
+    header,
+    .text-formatting,
+    #snippets-list {
+        display: none !important;
     }
 }
 
